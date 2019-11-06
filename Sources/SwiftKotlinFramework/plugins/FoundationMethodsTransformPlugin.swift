@@ -24,7 +24,10 @@ public class FoundationMethodsTransformPlugin: TokenTransformPlugin {
         var newTokens = [Token]()
 
         for token in tokens {
-            if token.kind == .identifier,
+            if token.kind == .keyword,token.value == "data class",let origin = token.origin, let node = token.node {
+                newTokens.append(origin.newToken(.keyword, "@Serializable data class", node))
+            }
+            else if token.kind == .identifier,
                 let memberExpression = token.origin as? ExplicitMemberExpression,
                 case ExplicitMemberExpression.Kind.namedType(let expression, let identifier) = memberExpression.kind,
                 let inferredType = inferTypeFor(expression: expression, topDeclaration: topDeclaration),
